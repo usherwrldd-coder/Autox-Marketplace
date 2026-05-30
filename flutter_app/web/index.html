@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- PRIMARY SEO -->
+  <title>AUTOX Marketplace — Buy &amp; Sell Premium Auto Parts | Escrow Protected</title>
+  <meta name="description" content="The world's premium auto parts marketplace. Buy, sell, bid and negotiate on 284K+ verified parts. PayPal top-up, escrow-protected, 12K+ verified vendors." />
+  <meta name="keywords"    content="auto parts marketplace, buy auto parts, sell auto parts, used car parts, vehicle parts auction, OEM parts, aftermarket parts, performance parts" />
+  <meta name="robots"      content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <link rel="canonical"    href="https://autoxmarketplace.com/" />
+
+  <!-- OPEN GRAPH -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:url"         content="https://autoxmarketplace.com/" />
+  <meta property="og:title"       content="AUTOX Marketplace — Premium Auto Parts Exchange" />
+  <meta property="og:description" content="Buy, sell, bid &amp; negotiate on 284K+ verified auto parts. Escrow-protected. Instant coin wallet." />
+  <meta property="og:image"       content="https://autoxmarketplace.com/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:site_name"   content="AUTOX Marketplace" />
+  <meta property="og:locale"      content="en_US" />
+
+  <!-- TWITTER CARD -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@autoxmarket" />
+  <meta name="twitter:creator"     content="@autoxmarket" />
+  <meta name="twitter:title"       content="AUTOX Marketplace — Premium Auto Parts" />
+  <meta name="twitter:description" content="Premium Auto Parts Exchange — Escrow Protected, Coin-Powered" />
+  <meta name="twitter:image"       content="https://autoxmarketplace.com/og-image.jpg" />
+
+  <!-- SCHEMA.ORG -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "AUTOX Marketplace",
+    "url": "https://autoxmarketplace.com",
+    "description": "Premium auto parts marketplace with escrow protection and coin wallet system",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://autoxmarketplace.com/marketplace?q={search_term_string}"
+      },
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "AUTOX Marketplace",
+    "url": "https://autoxmarketplace.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://autoxmarketplace.com/logo.png"
+    },
+    "sameAs": [
+      "https://twitter.com/autoxmarket",
+      "https://facebook.com/autoxmarket",
+      "https://instagram.com/autoxmarket"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "customer support",
+      "availableLanguage": "English"
+    }
+  }
+  </script>
+
+  <!-- FAVICON & MANIFEST -->
+  <link rel="manifest"          href="/manifest.json" />
+  <link rel="icon"              type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon"              type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="apple-touch-icon"  sizes="180x180"  href="/icons/Icon-192.png" />
+  <meta name="theme-color"      content="#FF8C00" />
+  <meta name="msapplication-TileColor" content="#080C14" />
+
+  <!-- PERFORMANCE -->
+  <link rel="preconnect"    href="https://fonts.googleapis.com" />
+  <link rel="preconnect"    href="https://fonts.gstatic.com" crossorigin />
+  <link rel="dns-prefetch"  href="https://api-m.sandbox.paypal.com" />
+  <link rel="dns-prefetch"  href="https://api-m.paypal.com" />
+
+  <!-- FLUTTER BOOTSTRAP -->
+  <script src="flutter_bootstrap.js" async></script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #080C14; color: #F0F4FF; font-family: -apple-system, sans-serif; }
+    #loading {
+      position: fixed; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: #080C14; z-index: 9999;
+      gap: 20px;
+    }
+    .ax-spinner-ring {
+      width: 60px; height: 60px;
+      border: 3px solid rgba(255,140,0,0.2);
+      border-top-color: #FF8C00;
+      border-radius: 50%;
+      animation: ax-spin 0.9s linear infinite;
+    }
+    .ax-logo {
+      font-size: 14px; letter-spacing: 4px;
+      color: #8896B0; text-transform: uppercase;
+    }
+    @keyframes ax-spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div id="loading">
+    <div class="ax-spinner-ring"></div>
+    <div class="ax-logo">AUTOX Marketplace</div>
+  </div>
+  <script>
+    window.addEventListener('flutter-first-frame', function() {
+      var el = document.getElementById('loading');
+      if (el) {
+        el.style.opacity = '0';
+        el.style.transition = 'opacity 0.4s ease';
+        setTimeout(function() { el.style.display = 'none'; }, 400);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /
+Allow: /marketplace
+Allow: /auctions
+Allow: /product/
+Allow: /vendor/
+Allow: /blog/
+Allow: /faq
+Allow: /about
+
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /wallet
+Disallow: /vendor-panel
+Disallow: /chat
+Disallow: /api/
+
+Sitemap: https://autoxmarketplace.com/sitemap.xml

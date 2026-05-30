@@ -1,0 +1,20 @@
+{
+  "name": "AUTOX Marketplace",
+  "short_name": "AUTOX",
+  "description": "Premium Auto Parts Exchange — Escrow Protected",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#080C14",
+  "theme_color": "#FF8C00",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "/icons/Icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/Icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/Icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icons/Icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "screenshots": [
+    { "src": "/screenshots/desktop.jpg", "sizes": "1280x800", "type": "image/jpeg", "form_factor": "wide" },
+    { "src": "/screenshots/mobile.jpg",  "sizes": "390x844",  "type": "image/jpeg", "form_factor": "narrow" }
+  ]
+}
