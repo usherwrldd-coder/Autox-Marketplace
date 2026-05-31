@@ -1,21 +1,22 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_theme.dart';
-import '../../../../core/network/supabase_client.dart';
+import '../../../../shared/widgets/navbar.dart';
 
-final marketplaceProductsProvider = FutureProvider.family<List<Map<String, dynamic>>, Map<String, dynamic>>((ref, filters) async {
-  final svc = ref.watch(supabaseServiceProvider);
-  return svc.fetchProducts(
-    categoryId:  filters['categoryId'],
-    minPrice:    filters['minPrice'],
-    maxPrice:    filters['maxPrice'],
-    condition:   filters['condition'],
-    productType: filters['productType'],
-    vehicleMake: filters['vehicleMake'],
-    page:        filters['page'] ?? 1,
-  );
-});
+// Mock products data (fallback when Supabase is not available)
+const mockProducts = [
+  {'id': '1', 'title': 'Brembo GT 6-Piston Brake Kit', 'brand': 'Brembo', 'price': 2800.0, 'images': ['https://images.unsplash.com/photo-1616400619175-5beda3a17896?w=400'], 'rating': 4.9, 'reviews': 234, 'vendor': 'ProBrake Co.', 'type': 'buy_now', 'badge': 'Featured'},
+  {'id': '2', 'title': 'HKS GT2 Supercharger System', 'brand': 'HKS', 'price': 4200.0, 'images': ['https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400'], 'rating': 4.8, 'reviews': 156, 'vendor': 'JDM Direct', 'type': 'auction', 'badge': 'Hot'},
+  {'id': '3', 'title': 'BC Racing Coilover Kit Type BR', 'brand': 'BC Racing', 'price': 1200.0, 'images': ['https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?w=400'], 'rating': 4.7, 'reviews': 412, 'vendor': 'Track Ready', 'type': 'negotiable', 'badge': 'Best Seller'},
+  {'id': '4', 'title': 'Akrapovič Evolution Exhaust Ti', 'brand': 'Akrapovič', 'price': 3600.0, 'images': ['https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400'], 'rating': 5.0, 'reviews': 89, 'vendor': 'EU Performance', 'type': 'buy_now', 'badge': 'Premium'},
+  {'id': '5', 'title': 'Recaro Pole Position Seat', 'brand': 'Recaro', 'price': 1800.0, 'images': ['https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=400'], 'rating': 4.9, 'reviews': 201, 'vendor': 'Race Seats EU', 'type': 'buy_now', 'badge': 'New'},
+  {'id': '6', 'title': 'Turbosmart BOV Kompact Dual', 'brand': 'Turbosmart', 'price': 320.0, 'images': ['https://images.unsplash.com/photo-1517524285303-d6fc683dddf8?w=400'], 'rating': 4.6, 'reviews': 567, 'vendor': 'Boost Kings', 'type': 'negotiable', 'badge': ''},
+  {'id': '7', 'title': 'HID Motorsports Xenon Kit H7', 'brand': 'HID MS', 'price': 189.0, 'images': ['https://images.unsplash.com/photo-1493238792000-8113da705763?w=400'], 'rating': 4.5, 'reviews': 890, 'vendor': 'LuxLight', 'type': 'buy_now', 'badge': ''},
+  {'id': '8', 'title': 'Bilstein B16 PSS10 Kit', 'brand': 'Bilstein', 'price': 1650.0, 'images': ['https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=400'], 'rating': 4.8, 'reviews': 178, 'vendor': 'German Parts', 'type': 'auction', 'badge': 'Ending Soon'},
+];
 
 class MarketplacePage extends ConsumerStatefulWidget {
   const MarketplacePage({super.key});
@@ -28,6 +29,8 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> with SingleTi
   String  _sortBy  = 'newest';
   final int     _page    = 1;
   late TabController _tabController;
+  double _walletBalance = 2450.0;
+  int _notifications = 3;
   
   Map<String, dynamic> get _filters => {
     'productType': _selectedType,
@@ -39,6 +42,15 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> with SingleTi
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    _tabController.addListener(() {
+      if (_tabController.indexIsChanging) return;
+      switch (_tabController.index) {
+        case 0: context.go('/'); break;
+        case 1: // Already on marketplace
+          break;
+        case 2: context.go('/auctions'); break;
+      }
+    });
   }
 
   @override
@@ -49,14 +61,19 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> with SingleTi
 
   @override
   Widget build(BuildContext context) {
-    final productsAsync = ref.watch(marketplaceProductsProvider(_filters));
     final width = MediaQuery.of(context).size.width;
+    // Use mock data for now (Supabase may not be configured)
+    final products = _getFilteredProducts();
 
     return Scaffold(
       body: Column(
         children: [
-          // Custom Header with AUTOX Logo and Coin Balance
-          _buildHeader(),
+          // Navbar
+          Navbar(
+            currentPage: 'marketplace',
+            walletBalance: _walletBalance,
+            notifications: _notifications,
+          ),
           
           // TabBar
           _buildTabBar(),
@@ -111,42 +128,19 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> with SingleTi
 
                       // Products grid
                       Expanded(
-                        child: productsAsync.when(
-                          data: (products) => products.isEmpty
-                              ? const Center(child: Text('No products found', style: TextStyle(color: AppTheme.textMuted)))
-                              : GridView.builder(
-                                  padding: const EdgeInsets.all(16),
-                                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                                    maxCrossAxisExtent: 280, crossAxisSpacing: 16,
-                                    mainAxisSpacing: 16, childAspectRatio: 0.7,
-                                  ),
-                                  itemCount: products.length,
-                                  itemBuilder: (ctx, i) {
-                                    return Card(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(12),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            const Icon(Icons.build, size: 48, color: AppTheme.goldPrimary),
-                                            const SizedBox(height: 8),
-                                            Text(products[i]['title'] ?? 'Product', 
-                                              style: const TextStyle(fontWeight: FontWeight.w600),
-                                              maxLines: 2, overflow: TextOverflow.ellipsis),
-                                            const Spacer(),
-                                            Text('AOC ${products[i]['price'] ?? '0.00'}',
-                                              style: GoogleFonts.orbitron(
-                                                fontSize: 16, fontWeight: FontWeight.w700, color: AppTheme.goldPrimary),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
+                        child: products.isEmpty
+                            ? const Center(child: Text('No products found', style: TextStyle(color: AppTheme.textMuted)))
+                            : GridView.builder(
+                                padding: const EdgeInsets.all(16),
+                                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                                  maxCrossAxisExtent: 280, crossAxisSpacing: 16,
+                                  mainAxisSpacing: 16, childAspectRatio: 0.75,
                                 ),
-                          loading: () => const Center(child: CircularProgressIndicator()),
-                          error: (e, _) => Center(child: Text('Error: $e', style: const TextStyle(color: AppTheme.colorRed))),
-                        ),
+                                itemCount: products.length,
+                                itemBuilder: (ctx, i) {
+                                  return _productCard(products[i]);
+                                },
+                              ),
                       ),
                     ],
                   ),
@@ -162,74 +156,190 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> with SingleTi
     );
   }
 
-  Widget _buildHeader() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [AppTheme.bgCard, AppTheme.bgDark],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        border: Border(bottom: BorderSide(color: AppTheme.goldPrimary.withOpacity(0.3), width: 1)),
-        boxShadow: [
-          BoxShadow(
-            color: AppTheme.goldPrimary.withOpacity(0.1),
-            blurRadius: 10,
-            spreadRadius: 0,
+  List<Map<String, dynamic>> _getFilteredProducts() {
+    var filtered = mockProducts.where((p) {
+      if (_selectedType != null && p['type'] != _selectedType) return false;
+      return true;
+    }).toList();
+
+    // Sort
+    switch (_sortBy) {
+      case 'price_low':
+        filtered.sort((a, b) => (a['price'] as double).compareTo(b['price'] as double));
+        break;
+      case 'price_high':
+        filtered.sort((a, b) => (b['price'] as double).compareTo(a['price'] as double));
+        break;
+      case 'rating':
+        filtered.sort((a, b) => (b['rating'] as double).compareTo(a['rating'] as double));
+        break;
+      default: // newest
+        break;
+    }
+
+    return filtered;
+  }
+
+  Widget _productCard(Map<String, dynamic> product) {
+    return GestureDetector(
+      onTap: () => context.push('/product/${product['id']}'),
+      child: MouseRegion(
+        onEnter: (_) {},
+        onExit: (_) {},
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          decoration: BoxDecoration(
+            color: AppTheme.bgCard,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppTheme.borderColor),
           ),
-        ],
-      ),
-      child: Row(
-        children: [
-          // AUTOX Logo
-          Text('AUTOX',
-            style: GoogleFonts.orbitron(
-              fontSize: 28, fontWeight: FontWeight.w900, color: AppTheme.goldPrimary,
-              letterSpacing: 2,
-            ),
-          ),
-          const SizedBox(width: 8),
-          Text('MARKETPLACE',
-            style: GoogleFonts.orbitron(
-              fontSize: 14, fontWeight: FontWeight.w600, color: AppTheme.textMuted,
-              letterSpacing: 3,
-            ),
-          ),
-          const Spacer(),
-          // Coin Balance
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: AppTheme.goldPrimary.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: AppTheme.goldPrimary.withOpacity(0.3)),
-            ),
-            child: Row(
-              children: [
-                const Text('🪙', style: TextStyle(fontSize: 18)),
-                const SizedBox(width: 8),
-                Text('2,450.00 AXC',
-                  style: GoogleFonts.orbitron(
-                    fontSize: 14, fontWeight: FontWeight.w700, color: AppTheme.goldPrimary,
-                  ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Image
+              ClipRRect(
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                child: Stack(
+                  children: [
+                    SizedBox(
+                      height: 160,
+                      width: double.infinity,
+                      child: product['images'] != null && (product['images'] as List).isNotEmpty
+                          ? CachedNetworkImage(
+                              imageUrl: (product['images'] as List).first,
+                              fit: BoxFit.cover,
+                              placeholder: (ctx, url) => Container(
+                                color: AppTheme.bgDark,
+                                child: const Center(child: CircularProgressIndicator(color: AppTheme.goldPrimary)),
+                              ),
+                              errorWidget: (ctx, url, error) => Container(
+                                color: AppTheme.bgDark,
+                                child: const Center(child: Icon(Icons.image_not_supported, color: AppTheme.textMuted, size: 48)),
+                              ),
+                            )
+                          : Container(
+                              color: AppTheme.bgDark,
+                              child: const Center(child: Icon(Icons.build, size: 48, color: AppTheme.goldPrimary)),
+                            ),
+                    ),
+                    // Badge
+                    if (product['badge'] != null && (product['badge'] as String).isNotEmpty)
+                      Positioned(
+                        top: 8, left: 8,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: AppTheme.goldPrimary.withOpacity(0.15),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: AppTheme.goldPrimary.withOpacity(0.3)),
+                          ),
+                          child: Text(
+                            product['badge'] as String,
+                            style: const TextStyle(fontSize: 10, color: AppTheme.goldPrimary, fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ),
+                    // Type badge
+                    if (product['type'] == 'auction')
+                      Positioned(
+                        top: 8, right: 8,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: AppTheme.colorRed.withOpacity(0.15),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: AppTheme.colorRed.withOpacity(0.3)),
+                          ),
+                          child: const Text('🔨 Auction', style: TextStyle(fontSize: 10, color: AppTheme.colorRed, fontWeight: FontWeight.w600)),
+                        ),
+                      )
+                    else if (product['type'] == 'negotiable')
+                      Positioned(
+                        top: 8, right: 8,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: AppTheme.colorBlue.withOpacity(0.15),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: AppTheme.colorBlue.withOpacity(0.3)),
+                          ),
+                          child: const Text('💬 Offer', style: TextStyle(fontSize: 10, color: AppTheme.colorBlue, fontWeight: FontWeight.w600)),
+                        ),
+                      ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              // Info
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${(product['brand'] ?? '').toString().toUpperCase()} · ${(product['type'] ?? '').toString().toUpperCase()}',
+                      style: const TextStyle(fontSize: 10, color: AppTheme.goldPrimary, fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      product['title'] as String,
+                      style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.textPrimary),
+                      maxLines: 2, overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 8),
+                    // Rating
+                    Row(
+                      children: [
+                        ...List.generate(5, (i) => Icon(
+                          i < (product['rating'] as double).floor() ? Icons.star : Icons.star_border,
+                          size: 12, color: AppTheme.goldLight,
+                        )),
+                        const SizedBox(width: 4),
+                        Text('${product['rating']} (${product['reviews']})', style: const TextStyle(fontSize: 10, color: AppTheme.textMuted)),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'AOC ${(product['price'] as double).toStringAsFixed(0)}',
+                            style: GoogleFonts.orbitron(
+                              fontSize: 16, fontWeight: FontWeight.w700, color: AppTheme.goldPrimary,
+                            ),
+                          ),
+                        ),
+                        ElevatedButton(
+                          onPressed: () => context.push('/product/${product['id']}'),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            minimumSize: Size.zero,
+                          ),
+                          child: Text(product['type'] == 'auction' ? 'Bid' : product['type'] == 'negotiable' ? 'Offer' : 'Buy'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    const Divider(height: 1),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        const Text('🏪 ', style: TextStyle(fontSize: 11)),
+                        Expanded(
+                          child: Text(
+                            product['vendor'] as String,
+                            style: const TextStyle(fontSize: 11, color: AppTheme.textMuted),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const Text('✓ Escrow', style: TextStyle(fontSize: 10, color: AppTheme.colorGreen)),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: 16),
-          // Notification Bell
-          IconButton(
-            icon: const Icon(Icons.notifications_outlined, color: AppTheme.textPrimary),
-            onPressed: () {},
-          ),
-          // User Avatar
-          const CircleAvatar(
-            radius: 18,
-            backgroundColor: AppTheme.goldPrimary,
-            child: Icon(Icons.person, color: Colors.black, size: 20),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -262,7 +372,7 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> with SingleTi
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
+        gradient: const LinearGradient(
           colors: [AppTheme.bgDark, AppTheme.bgCard],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -274,25 +384,25 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> with SingleTi
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _footerLink('About'),
-              _footerLink('Help'),
-              _footerLink('Terms'),
-              _footerLink('Privacy'),
-              _footerLink('Contact'),
+              _footerLink('About', '/about'),
+              _footerLink('Help', '/help'),
+              _footerLink('Terms', '/terms'),
+              _footerLink('Privacy', '/privacy'),
+              _footerLink('Contact', '/contact'),
             ],
           ),
           const SizedBox(height: 16),
-          Text('© 2024 AUTOX Marketplace. All rights reserved.',
-            style: const TextStyle(fontSize: 12, color: AppTheme.textDim),
+          const Text('© 2024 AUTOX Marketplace. All rights reserved.',
+            style: TextStyle(fontSize: 12, color: AppTheme.textDim),
           ),
         ],
       ),
     );
   }
 
-  Widget _footerLink(String label) {
+  Widget _footerLink(String label, String path) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () => context.push(path),
       child: Text(label,
         style: const TextStyle(fontSize: 13, color: AppTheme.textMuted, fontWeight: FontWeight.w500),
       ),

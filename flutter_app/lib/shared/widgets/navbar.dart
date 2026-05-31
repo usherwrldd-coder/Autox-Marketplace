@@ -28,7 +28,7 @@ class _NavbarState extends State<Navbar> {
       height: 64,
       decoration: BoxDecoration(
         color: AppTheme.bgDark.withOpacity(0.95),
-        border: Border(bottom: BorderSide(color: AppTheme.borderColor)),
+        border: const Border(bottom: BorderSide(color: AppTheme.borderColor)),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -90,15 +90,15 @@ class _NavbarState extends State<Navbar> {
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: AppTheme.borderColor),
                   ),
-                  child: TextField(
+                  child: const TextField(
                     decoration: InputDecoration(
                       hintText: 'Search parts, brands, vehicles...',
-                      prefixIcon: const Icon(Icons.search, size: 18),
+                      prefixIcon: Icon(Icons.search, size: 18),
                       border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      hintStyle: const TextStyle(color: AppTheme.textDim),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      hintStyle: TextStyle(color: AppTheme.textDim),
                     ),
-                    style: const TextStyle(color: AppTheme.textPrimary, fontSize: 13),
+                    style: TextStyle(color: AppTheme.textPrimary, fontSize: 13),
                   ),
                 ),
               ),
@@ -157,7 +157,7 @@ class _NavbarState extends State<Navbar> {
                       child: Container(
                         width: 16,
                         height: 16,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: AppTheme.colorRed,
                           shape: BoxShape.circle,
                         ),

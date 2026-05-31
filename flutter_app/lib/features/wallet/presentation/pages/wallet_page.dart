@@ -1,11 +1,9 @@
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/network/supabase_client.dart';
-import '../../../../shared/widgets/coin_badge.dart';
 import '../../../../shared/widgets/gradient_button.dart';
 import 'deposit_history_page.dart';
 

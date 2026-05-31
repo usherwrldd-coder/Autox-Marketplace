@@ -15,9 +15,9 @@ class HomePage extends ConsumerStatefulWidget {
 
 class _HomePageState extends ConsumerState<HomePage> {
   final _searchCtrl = TextEditingController();
-  String _currentPage = 'home';
-  double _walletBalance = 2450.0;
-  int _notifications = 3;
+  final String _currentPage = 'home';
+  final double _walletBalance = 2450.0;
+  final int _notifications = 3;
 
   static const categories = [
     ('Engine Parts', '⚙️', '12,400'),
@@ -186,9 +186,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                     Expanded(
                       child: TextField(
                         controller: _searchCtrl,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'Search parts, brands...',
-                          prefixIcon: const Icon(Icons.search),
+                          prefixIcon: Icon(Icons.search),
                           border: InputBorder.none,
                           enabledBorder: InputBorder.none,
                           focusedBorder: InputBorder.none,
@@ -326,7 +326,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 200,
               crossAxisSpacing: 16,
               mainAxisSpacing: 16,
@@ -398,7 +398,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 160,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
@@ -467,7 +467,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 280,
               crossAxisSpacing: 16,
               mainAxisSpacing: 16,
@@ -503,9 +503,9 @@ class _HomePageState extends ConsumerState<HomePage> {
               // Image placeholder
               Container(
                 height: 160,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: AppTheme.bgDark,
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
                 ),
                 child: Center(
                   child: Text(
@@ -628,7 +628,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 280,
               crossAxisSpacing: 16,
               mainAxisSpacing: 16,
@@ -661,9 +661,9 @@ class _HomePageState extends ConsumerState<HomePage> {
               children: [
                 Container(
                   height: 160,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: AppTheme.bgDark,
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
                   ),
                   child: Center(
                     child: Text(
@@ -713,7 +713,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 8),
-                  Text('23 bids', style: const TextStyle(fontSize: 11, color: AppTheme.textMuted)),
+                  const Text('23 bids', style: TextStyle(fontSize: 11, color: AppTheme.textMuted)),
                   const SizedBox(height: 10),
                   Text(
                     '${product[3].toStringAsFixed(0)} AXC',
@@ -804,8 +804,8 @@ class _HomePageState extends ConsumerState<HomePage> {
         Container(
           width: 20,
           height: 20,
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(colors: [AppTheme.colorPurple, AppTheme.colorBlue]),
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(colors: [AppTheme.colorPurple, AppTheme.colorBlue]),
             shape: BoxShape.circle,
           ),
           child: Center(
@@ -847,7 +847,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 240,
               crossAxisSpacing: 16,
               mainAxisSpacing: 16,
@@ -914,7 +914,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                           Row(
                             children: [
                               const Text('⭐', style: TextStyle(fontSize: 12)),
-                              Text('${vendors[i][2]}', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                              Text(vendors[i][2], style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
                             ],
                           ),
                           Text('${vendors[i][3]} sales', style: const TextStyle(fontSize: 12, color: AppTheme.textMuted)),
@@ -1005,9 +1005,9 @@ class _HomePageState extends ConsumerState<HomePage> {
           ),
           const SizedBox(height: 16),
           // Copyright
-          Text(
+          const Text(
             '© 2024 AUTOX Marketplace. All rights reserved.',
-            style: const TextStyle(fontSize: 12, color: AppTheme.textDim),
+            style: TextStyle(fontSize: 12, color: AppTheme.textDim),
           ),
         ],
       ),
