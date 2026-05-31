@@ -44,7 +44,7 @@ jobs:
 
       - name: Build Flutter Web
         working-directory: ./flutter_app
-        run: flutter build web --release --no-wasm
+        run: flutter build web --release
 
       - name: Verify build output
         run: ls -la flutter_app/build/web
