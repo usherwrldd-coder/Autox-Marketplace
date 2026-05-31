@@ -50,7 +50,7 @@ class AppTheme {
         labelMedium:   const TextStyle(color: textMuted,   fontSize: 12),
         labelSmall:    const TextStyle(color: textDim,     fontSize: 11),
       ),
-      cardTheme: CardThemeData(
+      cardTheme: CardTheme(
         color:     bgCard,
         elevation: 0,
         margin:    EdgeInsets.zero,
@@ -123,7 +123,7 @@ class AppTheme {
         shape:            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         behavior:         SnackBarBehavior.floating,
       ),
-      dialogTheme: DialogThemeData(
+      dialogTheme: DialogTheme(
         backgroundColor:   bgCard,
         elevation:         0,
         shape:             RoundedRectangleBorder(
