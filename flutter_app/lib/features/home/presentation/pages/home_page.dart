@@ -985,42 +985,147 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   Widget _buildFooter() {
     return Container(
-      padding: const EdgeInsets.all(32),
+      padding: const EdgeInsets.fromLTRB(24, 48, 24, 28),
       decoration: BoxDecoration(
-        color: AppTheme.bgCard,
-        border: Border(top: BorderSide(color: AppTheme.goldPrimary.withOpacity(0.3), width: 1)),
+        color: const Color(0xFF060A12),
+        border: Border(top: BorderSide(color: AppTheme.borderColor, width: 1)),
       ),
       child: Column(
         children: [
-          // Footer links
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _footerLink('About'),
-              _footerLink('Help'),
-              _footerLink('Terms'),
-              _footerLink('Privacy'),
-              _footerLink('Contact'),
-            ],
+          // Footer grid
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 1400),
+            child: Wrap(
+              spacing: 32,
+              runSpacing: 32,
+              children: [
+                // Brand section
+                SizedBox(
+                  width: 200,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            width: 32,
+                            height: 32,
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(colors: [AppTheme.goldPrimary, AppTheme.goldDark]),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Center(
+                              child: Text(
+                                'AX',
+                                style: TextStyle(fontFamily: 'Orbitron', fontWeight: FontWeight.w900, fontSize: 14, color: Colors.black),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          ShaderMask(
+                            shaderCallback: (bounds) => const LinearGradient(colors: [AppTheme.goldPrimary, AppTheme.goldLight]).createShader(bounds),
+                            child: Text('AUTOX', style: GoogleFonts.orbitron(fontWeight: FontWeight.w700, fontSize: 14, color: Colors.white)),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      const Text(
+                        "The world's premium auto parts marketplace. Secure, escrow-protected transactions.",
+                        style: TextStyle(fontSize: 12, color: AppTheme.textMuted, height: 1.7),
+                      ),
+                    ],
+                  ),
+                ),
+                // Marketplace section
+                _footerColumn('Marketplace', [
+                  ('Browse Parts', '/marketplace'),
+                  ('Live Auctions', '/auctions'),
+                  ('Make Offers', '/marketplace?type=negotiable'),
+                  ('Featured Listings', '/marketplace?badge=featured'),
+                  ('Vendor Stores', '/vendors'),
+                ]),
+                // Account section
+                _footerColumn('Account', [
+                  ('Dashboard', '/dashboard'),
+                  ('Wallet', '/wallet'),
+                  ('Orders', '/orders'),
+                  ('Messages', '/chat'),
+                  ('Settings', '/settings'),
+                ]),
+                // Legal section
+                _footerColumn('Legal', [
+                  ('Terms of Service', '/terms'),
+                  ('Privacy Policy', '/privacy'),
+                  ('Escrow Policy', '/escrow-policy'),
+                  ('Refund Policy', '/refund-policy'),
+                  ('Cookie Policy', '/cookies'),
+                ]),
+              ],
+            ),
           ),
-          const SizedBox(height: 16),
-          // Copyright
-          const Text(
-            '© 2024 AUTOX Marketplace. All rights reserved.',
-            style: TextStyle(fontSize: 12, color: AppTheme.textDim),
+          const SizedBox(height: 32),
+          // Bottom bar
+          Container(
+            padding: const EdgeInsets.only(top: 20),
+            decoration: BoxDecoration(
+              border: Border(top: BorderSide(color: AppTheme.borderColor, width: 1)),
+            ),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 1400),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    '© 2024 AUTOX Marketplace. All rights reserved.',
+                    style: TextStyle(fontSize: 12, color: AppTheme.textDim),
+                  ),
+                  Row(
+                    children: ['PayPal', 'Visa', 'MC', 'Amex'].map((m) {
+                      return Container(
+                        margin: const EdgeInsets.only(left: 8),
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: AppTheme.goldPrimary.withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: AppTheme.goldPrimary.withOpacity(0.3)),
+                        ),
+                        child: Text(m, style: const TextStyle(fontSize: 10, color: AppTheme.goldPrimary, fontWeight: FontWeight.w600)),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _footerLink(String label) {
-    return GestureDetector(
-      onTap: () {},
-      child: Text(
-        label,
-        style: const TextStyle(fontSize: 13, color: AppTheme.textMuted, fontWeight: FontWeight.w500),
-      ),
+  Widget _footerColumn(String title, List<(String, String)> links) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title.toUpperCase(),
+          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppTheme.goldPrimary, letterSpacing: 1.5),
+        ),
+        const SizedBox(height: 14),
+        ...links.map((link) => Padding(
+          padding: const EdgeInsets.only(bottom: 4),
+          child: GestureDetector(
+            onTap: () => context.push(link.$2),
+            child: MouseRegion(
+              onEnter: (_) {},
+              onExit: (_) {},
+              child: Text(
+                link.$1,
+                style: const TextStyle(fontSize: 12, color: AppTheme.textMuted),
+              ),
+            ),
+          ),
+        )),
+      ],
     );
   }
 }
