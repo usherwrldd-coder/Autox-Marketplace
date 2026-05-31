@@ -27,6 +27,18 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       final protectedRoutes = ['/dashboard', '/wallet', '/chat', '/vendor-panel', '/admin', '/orders', '/notifications'];
       final isProtected = protectedRoutes.any((r) => state.matchedLocation.startsWith(r));
       if (isProtected && user == null) return '/login?redirect=${state.matchedLocation}';
+      
+      // Admin routes should only be accessible from admin.com domain
+      if (state.matchedLocation.startsWith('/admin')) {
+        final uri = Uri.base;
+        final host = uri.host.toLowerCase();
+        // Check if domain is admin.com or ends with .admin.com
+        final isAdminDomain = host == 'admin.com' || host.endsWith('.admin.com') || host.contains('admin.com');
+        if (!isAdminDomain) {
+          return '/'; // Redirect to home if not on admin.com domain
+        }
+      }
+      
       return null;
     },
     routes: [

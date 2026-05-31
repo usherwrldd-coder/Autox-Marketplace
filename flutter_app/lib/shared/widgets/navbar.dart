@@ -32,14 +32,13 @@ class _NavbarState extends State<Navbar> {
   }
 
   Future<void> _checkAdminStatus() async {
-    final user = Supabase.instance.client.auth.currentUser;
-    if (user != null) {
-      // Check if user email is from admin.com domain
-      final email = user.email ?? '';
-      final isAdmin = email.endsWith('@admin.com');
-      if (mounted) {
-        setState(() => _isAdmin = isAdmin);
-      }
+    // Check if the current domain is admin.com
+    final uri = Uri.base;
+    final host = uri.host.toLowerCase();
+    final isAdminDomain = host == 'admin.com' || host.endsWith('.admin.com') || host.contains('admin.com');
+    
+    if (isAdminDomain) {
+      setState(() => _isAdmin = true);
     }
   }
 
