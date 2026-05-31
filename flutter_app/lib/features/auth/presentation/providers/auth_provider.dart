@@ -45,10 +45,14 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
   Future<void> register(String email, String password, String role) async {
     state = const AsyncValue.loading();
     try {
-      final res = await _client.auth.signUp(email: email, password: password);
-      if (res.user != null) {
-        await _client.from('profiles').insert({'id': res.user!.id, 'role': role});
-      }
+      // Sign up with email/password - the database trigger will auto-create the profile
+      final res = await _client.auth.signUp(
+        email: email, 
+        password: password,
+        // Pass role in metadata for the trigger to use
+        data: {'role': role},
+      );
+      // Profile is auto-created by the database trigger
       state = AsyncValue.data(res.user);
     } catch (e, st) {
       state = AsyncValue.error(e, st);
