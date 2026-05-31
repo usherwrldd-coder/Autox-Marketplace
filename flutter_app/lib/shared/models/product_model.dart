@@ -100,7 +100,7 @@ class ProductModel {
     isAuction && auctionEnd != null && auctionEnd!.isAfter(DateTime.now());
 
   Duration? get auctionTimeLeft =>
-    auctionEnd != null ? auctionEnd!.difference(DateTime.now()) : null;
+    auctionEnd?.difference(DateTime.now());
 
   String get vehicleCompatibility {
     final parts = [vehicleMake, vehicleModel,

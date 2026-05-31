@@ -16,13 +16,13 @@ class HomePage extends ConsumerWidget {
           // Hero
           SliverToBoxAdapter(child: _HeroSection()),
           // Stats
-          SliverToBoxAdapter(child: const _StatsSection()),
+          const SliverToBoxAdapter(child: _StatsSection()),
           // Categories
-          SliverToBoxAdapter(child: const _CategoriesSection()),
+          const SliverToBoxAdapter(child: _CategoriesSection()),
           // Escrow Banner
-          SliverToBoxAdapter(child: const _EscrowBanner()),
+          const SliverToBoxAdapter(child: _EscrowBanner()),
           // Coin Banner
-          SliverToBoxAdapter(child: const _CoinBanner()),
+          const SliverToBoxAdapter(child: _CoinBanner()),
           // Footer spacer
           const SliverToBoxAdapter(child: SizedBox(height: 40)),
         ],
@@ -49,10 +49,10 @@ class _HeroSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(children: [
-            const _Tag('🏆 #1 Auto Parts Marketplace', AppTheme.goldPrimary),
-            const SizedBox(width: 8),
-            const _Tag('✓ Escrow Protected', AppTheme.colorGreen),
+          const Row(children: [
+            _Tag('🏆 #1 Auto Parts Marketplace', AppTheme.goldPrimary),
+            SizedBox(width: 8),
+            _Tag('✓ Escrow Protected', AppTheme.colorGreen),
           ]),
           const SizedBox(height: 20),
           Text(
@@ -199,10 +199,10 @@ class _EscrowBanner extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: AppTheme.colorPurple.withOpacity(0.2)),
       ),
-      child: Row(children: [
-        const Text('🛡️', style: TextStyle(fontSize: 48)),
-        const SizedBox(width: 20),
-        const Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      child: const Row(children: [
+        Text('🛡️', style: TextStyle(fontSize: 48)),
+        SizedBox(width: 20),
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text('ESCROW PROTECTED TRANSACTIONS', style: TextStyle(fontFamily: 'Orbitron', fontSize: 16, color: AppTheme.colorPurple, fontWeight: FontWeight.w700)),
           SizedBox(height: 8),
           Text(

@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/network/supabase_client.dart';
-import '../../../../shared/widgets/product_card.dart';
-import '../../../../shared/models/product_model.dart';
 
 final marketplaceProductsProvider = FutureProvider.family<List<Map<String, dynamic>>, Map<String, dynamic>>((ref, filters) async {
   final svc = ref.watch(supabaseServiceProvider);

@@ -31,7 +31,6 @@ final bankSettingsProvider = FutureProvider<Map<String, String>>((ref) async {
       .from('marketplace_settings')
       .select('key,value')
       .inFilter('key', ['bank_name','bank_account_number','bank_routing_number','bank_account_name','bank_swift','deposit_instructions']);
-  if (response is! List) return {};
   final data = response as List;
   if (data.isEmpty) return {};
   final result = <String, String>{};
@@ -106,7 +105,7 @@ class _WalletPageState extends ConsumerState<WalletPage> {
           .uploadBinary(fileName, Uint8List.fromList(fileBytes));
 
       // uploadBinary returns the path as a String on success
-      final proofUrl = storageResponse is String ? storageResponse : fileName;
+      final proofUrl = storageResponse;
 
       // Create deposit record
       final depositResponse = await client.from('deposits').insert({
@@ -271,15 +270,15 @@ class _WalletPageState extends ConsumerState<WalletPage> {
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: AppTheme.colorBlue.withOpacity(0.2)),
             ),
-            child: Column(
+            child: const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('🛡️ Secure Deposit Process', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: AppTheme.colorBlue)),
-                const SizedBox(height: 4),
-                const Text('• Transfer funds directly to our verified bank account', style: TextStyle(fontSize: 11, color: AppTheme.textMuted)),
-                const Text('• All deposits are manually verified before crediting', style: TextStyle(fontSize: 11, color: AppTheme.textMuted)),
-                const Text('• Never send payments directly to vendors outside the platform', style: TextStyle(fontSize: 11, color: AppTheme.textMuted)),
-                const Text('• All marketplace transactions must remain within AUTOX for escrow protection', style: TextStyle(fontSize: 11, color: AppTheme.textMuted)),
+                Text('🛡️ Secure Deposit Process', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: AppTheme.colorBlue)),
+                SizedBox(height: 4),
+                Text('• Transfer funds directly to our verified bank account', style: TextStyle(fontSize: 11, color: AppTheme.textMuted)),
+                Text('• All deposits are manually verified before crediting', style: TextStyle(fontSize: 11, color: AppTheme.textMuted)),
+                Text('• Never send payments directly to vendors outside the platform', style: TextStyle(fontSize: 11, color: AppTheme.textMuted)),
+                Text('• All marketplace transactions must remain within AUTOX for escrow protection', style: TextStyle(fontSize: 11, color: AppTheme.textMuted)),
               ],
             ),
           ),

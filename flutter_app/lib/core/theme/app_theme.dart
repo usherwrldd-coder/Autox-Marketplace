@@ -28,12 +28,10 @@ class AppTheme {
         primary:    goldPrimary,
         secondary:  goldLight,
         surface:    bgCard,
-        background: bgDark,
         error:      colorRed,
         onPrimary:  Colors.black,
         onSecondary: Colors.black,
         onSurface:  textPrimary,
-        onBackground: textPrimary,
       ),
       textTheme: GoogleFonts.dmSansTextTheme(base.textTheme).copyWith(
         displayLarge:  const TextStyle(color: textPrimary, fontWeight: FontWeight.w900, fontSize: 57),
@@ -144,7 +142,6 @@ class AppTheme {
         primary:   goldPrimary,
         secondary: goldDark,
         surface:   Color(0xFFF8F9FA),
-        background: Color(0xFFFFFFFF),
       ),
     );
   }

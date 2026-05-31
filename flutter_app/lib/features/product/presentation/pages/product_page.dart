@@ -198,7 +198,7 @@ class _ProductPageState extends ConsumerState<ProductPage> with SingleTickerProv
       if (isAuction && auctionEnd != null) ...[
         Row(children: [AuctionTimer(endTime: auctionEnd), const SizedBox(width: 10), Text('$bidCount bids', style: const TextStyle(fontSize: 12, color: AppTheme.textMuted))]),
         const SizedBox(height: 8),
-        Text('Current Bid', style: const TextStyle(fontSize: 12, color: AppTheme.textMuted)),
+        const Text('Current Bid', style: TextStyle(fontSize: 12, color: AppTheme.textMuted)),
       ] else
         const Text('Price', style: TextStyle(fontSize: 12, color: AppTheme.textMuted)),
       Text('${(currentBid ?? priceCoins).toString().replaceAllMapped(RegExp(r"(\d{1,3})(?=(\d{3})+(?!\d))"), (m) => "${m[1]},")} AXC',

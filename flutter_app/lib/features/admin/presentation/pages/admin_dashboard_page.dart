@@ -213,7 +213,7 @@ class _AdminOverview extends StatelessWidget {
             child: const Text('Review'),
           ),
         ]),
-      )).toList(),
+      )),
     ],
   );
 }
@@ -289,7 +289,7 @@ class _FeeSettingsSection extends StatelessWidget {
               const SizedBox(width: 8),
               Text(f.$3, style: const TextStyle(fontWeight: FontWeight.w600, color: AppTheme.goldPrimary)),
             ]),
-          )).toList(),
+          )),
           const SizedBox(height: 8),
           SizedBox(width: double.infinity, child: ElevatedButton(onPressed: () {}, child: const Text('Save Fee Settings'))),
         ]),

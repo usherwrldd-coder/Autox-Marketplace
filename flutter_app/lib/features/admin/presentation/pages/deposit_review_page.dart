@@ -20,7 +20,6 @@ final pendingDepositsProvider = FutureProvider<List<Map<String, dynamic>>>((ref)
       ''')
       .eq('status', 'pending')
       .order('created_at', ascending: false);
-  if (response is! List) return [];
   return (response as List).cast<Map<String, dynamic>>();
 });
 
@@ -42,7 +41,6 @@ final processedDepositsProvider = FutureProvider<List<Map<String, dynamic>>>((re
       .inFilter('status', ['approved', 'rejected'])
       .order('created_at', ascending: false)
       .limit(50);
-  if (response is! List) return [];
   return (response as List).cast<Map<String, dynamic>>();
 });
 
@@ -273,7 +271,7 @@ class _PendingDepositCardState extends ConsumerState<_PendingDepositCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('${amount.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (m) => '${m[1]},')} AXC',
-                    style: TextStyle(fontFamily: 'Orbitron', fontSize: 18, fontWeight: FontWeight.w700, color: AppTheme.goldPrimary)),
+                    style: const TextStyle(fontFamily: 'Orbitron', fontSize: 18, fontWeight: FontWeight.w700, color: AppTheme.goldPrimary)),
                   const SizedBox(height: 4),
                   Text('Ref: $refNum', style: const TextStyle(fontSize: 12, color: AppTheme.textMuted)),
                 ],
@@ -316,14 +314,14 @@ class _PendingDepositCardState extends ConsumerState<_PendingDepositCard> {
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: AppTheme.colorBlue.withOpacity(0.2)),
                 ),
-                child: Row(
+                child: const Row(
                   children: [
-                    const Icon(Icons.image, size: 16, color: AppTheme.colorBlue),
-                    const SizedBox(width: 8),
+                    Icon(Icons.image, size: 16, color: AppTheme.colorBlue),
+                    SizedBox(width: 8),
                     Expanded(
                       child: Text('View proof of payment', style: TextStyle(fontSize: 12, color: AppTheme.colorBlue, fontWeight: FontWeight.w500)),
                     ),
-                    const Icon(Icons.open_in_new, size: 14, color: AppTheme.colorBlue),
+                    Icon(Icons.open_in_new, size: 14, color: AppTheme.colorBlue),
                   ],
                 ),
               ),

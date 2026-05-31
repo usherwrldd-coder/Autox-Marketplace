@@ -12,7 +12,6 @@ final depositsProvider = FutureProvider<List<Map<String, dynamic>>>((ref) async 
       .select()
       .eq('user_id', user.id)
       .order('created_at', ascending: false);
-  if (response is! List) return [];
   return (response as List).cast<Map<String, dynamic>>();
 });
 

@@ -49,10 +49,10 @@ class EscrowBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppTheme.colorPurple.withOpacity(0.3)),
       ),
-      child: Row(
+      child: const Row(
         children: [
-          const Text('🛡️', style: TextStyle(fontSize: 20)),
-          const SizedBox(width: 10),
+          Text('🛡️', style: TextStyle(fontSize: 20)),
+          SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,8 +60,8 @@ class EscrowBadge extends StatelessWidget {
                 Text('Escrow Protected', style: TextStyle(
                   fontWeight: FontWeight.w700, color: AppTheme.colorPurple, fontSize: 13,
                 )),
-                const SizedBox(height: 2),
-                const Text(
+                SizedBox(height: 2),
+                Text(
                   'Coins are held securely until you confirm delivery.',
                   style: TextStyle(fontSize: 11, color: AppTheme.textMuted),
                 ),

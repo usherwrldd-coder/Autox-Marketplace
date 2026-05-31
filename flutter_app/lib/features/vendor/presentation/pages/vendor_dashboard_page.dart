@@ -288,7 +288,7 @@ class _AddListingFormState extends State<_AddListingForm> {
 
   Widget _dropdown(String label, String value, List<String> items, ValueChanged<String?> onChanged) =>
     DropdownButtonFormField<String>(
-      value: value,
+      initialValue: value,
       decoration: InputDecoration(labelText: label),
       dropdownColor: AppTheme.bgCard,
       items: items.map((i) => DropdownMenuItem(value: i, child: Text(i, style: const TextStyle(fontSize: 13)))).toList(),
@@ -296,7 +296,7 @@ class _AddListingFormState extends State<_AddListingForm> {
     );
 
   Widget _toggle(String label, bool value, ValueChanged<bool> onChanged) => Row(children: [
-    Switch(value: value, onChanged: onChanged, activeColor: AppTheme.goldPrimary),
+    Switch(value: value, onChanged: onChanged, activeThumbColor: AppTheme.goldPrimary),
     const SizedBox(width: 6),
     Text(label, style: const TextStyle(fontSize: 13)),
   ]);
