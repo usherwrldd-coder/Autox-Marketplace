@@ -20,7 +20,7 @@ import '../../features/search/presentation/pages/search_page.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: '/',
+    initialLocation: '/marketplace',
     debugLogDiagnostics: false,
     redirect: (context, state) {
       final user = Supabase.instance.client.auth.currentUser;
