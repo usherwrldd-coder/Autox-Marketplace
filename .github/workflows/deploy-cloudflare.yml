@@ -22,21 +22,33 @@ jobs:
       - name: Create .env file
         working-directory: ./flutter_app
         run: |
-          cat > .env << EOF
-          SUPABASE_URL=${{ secrets.SUPABASE_URL || 'https://thhqtjpxfekzkkpbxaua.supabase.co' }}
-          SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY || 'your-service-role-key' }}
-          SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY || 'your-anon-key' }}
-          APP_URL=${{ secrets.APP_URL || 'http://localhost:59657' }}
-          APP_NAME=${{ secrets.APP_NAME || 'AUTOX Marketplace' }}
-          BANK_NAME=${{ secrets.BANK_NAME || 'Lead' }}
-          BANK_ACCOUNT_NAME=${{ secrets.BANK_ACCOUNT_NAME || 'Usher Miango Nkembenyi' }}
-          BANK_ACCOUNT_NUMBER=${{ secrets.BANK_ACCOUNT_NUMBER || '212519935049' }}
-          BANK_ROUTING_NUMBER=${{ secrets.BANK_ROUTING_NUMBER || '101019644' }}
-          BANK_WIRE_ROUTING_NUMBER=${{ secrets.BANK_WIRE_ROUTING_NUMBER || '101019644' }}
-          BANK_ADDRESS=${{ secrets.BANK_ADDRESS || '1801 Main Street, Kansas City, MO 64108' }}
-          GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID || 'your-google-client-id' }}
-          GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET || 'your-google-client-secret' }}
-          EOF
+          echo "SUPABASE_URL=${SUPABASE_URL}" > .env
+          echo "SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}" >> .env
+          echo "SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}" >> .env
+          echo "APP_URL=${APP_URL}" >> .env
+          echo "APP_NAME=${APP_NAME}" >> .env
+          echo "BANK_NAME=${BANK_NAME}" >> .env
+          echo "BANK_ACCOUNT_NAME=${BANK_ACCOUNT_NAME}" >> .env
+          echo "BANK_ACCOUNT_NUMBER=${BANK_ACCOUNT_NUMBER}" >> .env
+          echo "BANK_ROUTING_NUMBER=${BANK_ROUTING_NUMBER}" >> .env
+          echo "BANK_WIRE_ROUTING_NUMBER=${BANK_WIRE_ROUTING_NUMBER}" >> .env
+          echo "BANK_ADDRESS=${BANK_ADDRESS}" >> .env
+          echo "GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}" >> .env
+          echo "GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}" >> .env
+        env:
+          SUPABASE_URL: https://thhqtjpxfekzkkpbxaua.supabase.co
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          APP_URL: http://localhost:59657
+          APP_NAME: AUTOX Marketplace
+          BANK_NAME: Lead
+          BANK_ACCOUNT_NAME: Usher Miango Nkembenyi
+          BANK_ACCOUNT_NUMBER: 212519935049
+          BANK_ROUTING_NUMBER: 101019644
+          BANK_WIRE_ROUTING_NUMBER: 101019644
+          BANK_ADDRESS: 1801 Main Street, Kansas City, MO 64108
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
 
       - name: Get Flutter dependencies
         working-directory: ./flutter_app
@@ -54,4 +66,5 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy flutter_app/build/web --project-name=autox-marketplace
+          command: pages deploy build/web --project-name=autox-marketplace
+          workingDirectory: flutter_app
