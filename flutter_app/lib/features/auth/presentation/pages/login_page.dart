@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/theme/app_theme.dart';
-import '../../../../core/utils/validators.dart';
 import '../../../../shared/widgets/gradient_button.dart';
 import '../providers/auth_provider.dart';
 
@@ -13,35 +13,6 @@ class LoginPage extends ConsumerStatefulWidget {
 }
 
 class _LoginPageState extends ConsumerState<LoginPage> {
-  final _formKey = GlobalKey<FormState>();
-  final _emailCtrl    = TextEditingController();
-  final _passwordCtrl = TextEditingController();
-  bool  _obscure      = true;
-
-  @override
-  void dispose() {
-    _emailCtrl.dispose();
-    _passwordCtrl.dispose();
-    super.dispose();
-  }
-
-  Future<void> _login() async {
-    if (!_formKey.currentState!.validate()) return;
-    await ref.read(authNotifierProvider.notifier).login(
-      _emailCtrl.text.trim(),
-      _passwordCtrl.text,
-    );
-
-    final state = ref.read(authNotifierProvider);
-    state.when(
-      data: (user) { if (user != null) context.go('/dashboard'); },
-      error: (e, _) => ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString()), backgroundColor: AppTheme.colorRed),
-      ),
-      loading: () {},
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authNotifierProvider);
@@ -53,67 +24,74 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           padding: const EdgeInsets.all(24),
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 440),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Logo
-                  const Text('⚙️', textAlign: TextAlign.center, style: TextStyle(fontSize: 48)),
-                  const SizedBox(height: 12),
-                  const Text('AUTOX', textAlign: TextAlign.center, style: TextStyle(
-                    fontFamily: 'Orbitron', fontSize: 28, fontWeight: FontWeight.w900, color: AppTheme.goldPrimary,
-                  )),
-                  const SizedBox(height: 4),
-                  const Text('Welcome back', textAlign: TextAlign.center, style: TextStyle(color: AppTheme.textMuted, fontSize: 14)),
-                  const SizedBox(height: 32),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Logo
+                const Text('⚙️', textAlign: TextAlign.center, style: TextStyle(fontSize: 48)),
+                const SizedBox(height: 12),
+                const Text('AUTOX', textAlign: TextAlign.center, style: TextStyle(
+                  fontFamily: 'Orbitron', fontSize: 28, fontWeight: FontWeight.w900, color: AppTheme.goldPrimary,
+                )),
+                const SizedBox(height: 4),
+                const Text('Welcome back', textAlign: TextAlign.center, style: TextStyle(color: AppTheme.textMuted, fontSize: 14)),
+                const SizedBox(height: 48),
 
-                  // Email
-                  TextFormField(
-                    controller:  _emailCtrl,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(labelText: 'Email', prefixIcon: Icon(Icons.email_outlined)),
-                    validator: Validators.email,
+                // Google Sign In Button
+                GradientButton(
+                  label: 'Continue with Google',
+                  onPressed: () async {
+                    try {
+                      final response = await Supabase.instance.client.auth.signInWithOAuth(
+                        OAuthProvider.google,
+                        redirectTo: Uri.base.origin + '/auth/v1/callback',
+                      );
+                      if (!response) {
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Failed to sign in with Google'),
+                              backgroundColor: AppTheme.colorRed,
+                            ),
+                          );
+                        }
+                      }
+                    } catch (e) {
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(e.toString()),
+                            backgroundColor: AppTheme.colorRed,
+                          ),
+                        );
+                      }
+                    }
+                  },
+                  isLoading: isLoading,
+                  width: double.infinity,
+                ),
+                const SizedBox(height: 16),
+
+                // Alternative: Continue as Guest
+                OutlinedButton.icon(
+                  onPressed: () => context.go('/'),
+                  icon: const Icon(Icons.person_outline),
+                  label: const Text('Browse as Guest'),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    side: const BorderSide(color: AppTheme.borderColor),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
-                  const SizedBox(height: 16),
+                ),
+                const SizedBox(height: 32),
 
-                  // Password
-                  TextFormField(
-                    controller: _passwordCtrl,
-                    obscureText: _obscure,
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      prefixIcon: const Icon(Icons.lock_outline),
-                      suffixIcon: IconButton(
-                        icon: Icon(_obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined),
-                        onPressed: () => setState(() => _obscure = !_obscure),
-                      ),
-                    ),
-                    validator: (v) => v == null || v.isEmpty ? 'Password is required' : null,
-                  ),
-                  const SizedBox(height: 8),
-
-                  // Forgot password
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () => context.push('/forgot-password'),
-                      child: const Text('Forgot password?'),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Login button
-                  GradientButton(label: 'Sign In', onPressed: _login, isLoading: isLoading, width: double.infinity),
-                  const SizedBox(height: 16),
-
-                  // Register link
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    const Text("Don't have an account? ", style: TextStyle(color: AppTheme.textMuted)),
-                    TextButton(onPressed: () => context.go('/register'), child: const Text('Sign Up')),
-                  ]),
-                ],
-              ),
+                // Info text
+                const Text(
+                  'By continuing, you agree to our Terms of Service and Privacy Policy.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: AppTheme.textDim, fontSize: 12),
+                ),
+              ],
             ),
           ),
         ),
