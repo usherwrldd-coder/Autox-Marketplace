@@ -25,11 +25,12 @@ jobs:
 
       - name: Build Flutter Web
         working-directory: ./flutter_app
-        run: flutter build web --release --web-renderer html
+        run: flutter build web --release
 
       - name: Publish to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy flutter_app/build/web --project-name=autox-marketplace
+          command: pages deploy build/web --project-name=autox-marketplace
+          workingDirectory: flutter_app
