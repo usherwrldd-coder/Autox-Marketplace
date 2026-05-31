@@ -9,6 +9,7 @@ class AppTheme {
   static const Color bgDark        = Color(0xFF080C14);
   static const Color bgCard        = Color(0xFF0D1420);
   static const Color bgCardHover   = Color(0xFF111C30);
+  static const Color bgGlass       = Color(0x0C0D1420); // rgba(13,20,32,0.75)
   static const Color borderColor   = Color(0x12FFFFFF);
   static const Color borderHover   = Color(0x66FF8C00);
   static const Color textPrimary   = Color(0xFFF0F4FF);

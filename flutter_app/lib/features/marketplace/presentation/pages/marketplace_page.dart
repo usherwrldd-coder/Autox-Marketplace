@@ -166,8 +166,19 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> with SingleTi
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       decoration: BoxDecoration(
-        color: AppTheme.bgCard,
-        border: Border(bottom: BorderSide(color: AppTheme.borderColor)),
+        gradient: LinearGradient(
+          colors: [AppTheme.bgCard, AppTheme.bgDark],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        border: Border(bottom: BorderSide(color: AppTheme.goldPrimary.withOpacity(0.3), width: 1)),
+        boxShadow: [
+          BoxShadow(
+            color: AppTheme.goldPrimary.withOpacity(0.1),
+            blurRadius: 10,
+            spreadRadius: 0,
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -225,17 +236,19 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> with SingleTi
 
   Widget _buildTabBar() {
     return Container(
+      height: 48,
       decoration: BoxDecoration(
-        color: AppTheme.bgDark,
-        border: Border(bottom: BorderSide(color: AppTheme.borderColor)),
+        color: AppTheme.bgCard,
+        border: Border(bottom: BorderSide(color: AppTheme.goldPrimary.withOpacity(0.2), width: 1)),
       ),
       child: TabBar(
         controller: _tabController,
         indicatorColor: AppTheme.goldPrimary,
-        indicatorWeight: 2,
+        indicatorWeight: 3,
         labelColor: AppTheme.goldPrimary,
         unselectedLabelColor: AppTheme.textMuted,
         labelStyle: GoogleFonts.orbitron(fontSize: 12, fontWeight: FontWeight.w600),
+        unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500),
         tabs: const [
           Tab(text: '🏠 HOME'),
           Tab(text: '🛒 MARKETPLACE'),
@@ -249,8 +262,12 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> with SingleTi
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: AppTheme.bgCard,
-        border: Border(top: BorderSide(color: AppTheme.borderColor)),
+        gradient: LinearGradient(
+          colors: [AppTheme.bgDark, AppTheme.bgCard],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        border: Border(top: BorderSide(color: AppTheme.goldPrimary.withOpacity(0.3), width: 1)),
       ),
       child: Column(
         children: [
