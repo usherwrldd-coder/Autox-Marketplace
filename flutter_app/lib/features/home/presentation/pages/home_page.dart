@@ -37,6 +37,20 @@ class _HomePageState extends ConsumerState<HomePage> {
     ('\$', '42M+ Coins Transacted', '🪙'),
   ];
 
+  static const products = [
+    ['Brembo GT 6-Piston', 'Brembo', 'Brakes', 2800.0, '🔴', 4.9, 234, 'ProBrake Co.'],
+    ['HKS GT2 Supercharger', 'HKS', 'Engine Parts', 4200.0, '🟡', 4.8, 156, 'JDM Direct'],
+    ['BC Racing Coilover', 'BC Racing', 'Suspension', 1200.0, '🔵', 4.7, 412, 'Track Ready'],
+    ['Akrapovič Exhaust Ti', 'Akrapovič', 'Exhaust', 3600.0, '⚫', 5.0, 89, 'EU Performance'],
+  ];
+
+  static const vendors = [
+    ['JDM Direct', '🇯🇵', '4.9', '12,400'],
+    ['EU Performance', '🇩🇪', '4.8', '8,700'],
+    ['ProBrake Co.', '🇺🇸', '4.9', '6,200'],
+    ['Track Ready', '🇬🇧', '4.7', '9,100'],
+  ];
+
   @override
   void dispose() {
     _searchCtrl.dispose();
@@ -71,14 +85,23 @@ class _HomePageState extends ConsumerState<HomePage> {
                   // Categories Section
                   _buildCategoriesSection(width),
 
+                  // Trending Parts
+                  _buildTrendingParts(width),
+
+                  // Live Auctions
+                  _buildLiveAuctions(width),
+
                   // Escrow Banner
-                  const _EscrowBanner(),
+                  _buildEscrowBanner(width),
+
+                  // Top Verified Vendors
+                  _buildTopVendors(width),
 
                   // Coin Banner
                   _buildCoinBanner(width),
 
-                  // Footer Spacer
-                  const SizedBox(height: 40),
+                  // Footer
+                  _buildFooter(),
                 ],
               ),
             ),
@@ -120,7 +143,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           ),
           const SizedBox(height: 20),
 
-          // Title
+          // Title with shimmer effect
           ShaderMask(
             shaderCallback: (bounds) => const LinearGradient(
               colors: [AppTheme.goldPrimary, AppTheme.goldLight, Colors.white, AppTheme.goldLight, AppTheme.goldPrimary],
@@ -140,9 +163,9 @@ class _HomePageState extends ConsumerState<HomePage> {
           // Subtitle
           SizedBox(
             width: width > 768 ? 500 : double.infinity,
-            child: Text(
+            child: const Text(
               'Buy, sell, bid & negotiate on 284K+ verified auto parts. Every transaction escrow-protected with AUTOX Coins.',
-              style: const TextStyle(fontSize: 16, color: AppTheme.textMuted, height: 1.7),
+              style: TextStyle(fontSize: 16, color: AppTheme.textMuted, height: 1.7),
             ),
           ),
           const SizedBox(height: 32),
@@ -418,6 +441,497 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
+  Widget _buildTrendingParts(double width) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'TRENDING PARTS',
+                style: GoogleFonts.orbitron(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              TextButton(
+                onPressed: () => context.go('/marketplace'),
+                child: const Text('Browse All →'),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 280,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              childAspectRatio: 0.85,
+            ),
+            itemCount: products.length,
+            itemBuilder: (ctx, i) {
+              return _productCard(products[i]);
+            },
+          ),
+          const SizedBox(height: 56),
+        ],
+      ),
+    );
+  }
+
+  Widget _productCard(List<dynamic> product) {
+    return GestureDetector(
+      onTap: () => context.go('/product/${product[0].toLowerCase().replaceAll(' ', '-')}'),
+      child: MouseRegion(
+        onEnter: (_) {},
+        onExit: (_) {},
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          decoration: BoxDecoration(
+            color: AppTheme.bgCard,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppTheme.borderColor),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Image placeholder
+              Container(
+                height: 160,
+                decoration: BoxDecoration(
+                  color: AppTheme.bgDark,
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                ),
+                child: Center(
+                  child: Text(
+                    product[4],
+                    style: const TextStyle(fontSize: 64),
+                  ),
+                ),
+              ),
+              // Info
+              Padding(
+                padding: const EdgeInsets.all(14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${product[1].toUpperCase()} · ${product[2].toUpperCase()}',
+                      style: const TextStyle(fontSize: 10, color: AppTheme.goldPrimary, fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      product[0],
+                      style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.textPrimary),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 8),
+                    // Rating
+                    Row(
+                      children: [
+                        ...List.generate(5, (i) => Icon(
+                          i < product[5].floor() ? Icons.star : Icons.star_border,
+                          size: 12,
+                          color: AppTheme.goldLight,
+                        )),
+                        const SizedBox(width: 4),
+                        Text('${product[5]} (${product[6]})', style: const TextStyle(fontSize: 10, color: AppTheme.textMuted)),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${product[3].toStringAsFixed(0)} AXC',
+                                style: GoogleFonts.orbitron(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppTheme.goldPrimary,
+                                ),
+                              ),
+                              Text(
+                                '≈ \$${product[3].toStringAsFixed(0)}',
+                                style: const TextStyle(fontSize: 10, color: AppTheme.textMuted),
+                              ),
+                            ],
+                          ),
+                        ),
+                        ElevatedButton(
+                          onPressed: () => context.go('/product/${product[0].toLowerCase().replaceAll(' ', '-')}'),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            minimumSize: Size.zero,
+                          ),
+                          child: const Text('Buy'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    const Divider(height: 1),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        const Text('🏪 ', style: TextStyle(fontSize: 11)),
+                        Expanded(
+                          child: Text(
+                            product[7],
+                            style: const TextStyle(fontSize: 11, color: AppTheme.textMuted),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const Text('✓ Escrow', style: TextStyle(fontSize: 10, color: AppTheme.colorGreen)),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLiveAuctions(double width) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '🔨 LIVE AUCTIONS',
+                style: GoogleFonts.orbitron(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              TextButton(
+                onPressed: () => context.go('/auctions'),
+                child: const Text('All Auctions →'),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 280,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              childAspectRatio: 0.85,
+            ),
+            itemCount: products.length,
+            itemBuilder: (ctx, i) {
+              return _auctionCard(products[i]);
+            },
+          ),
+          const SizedBox(height: 56),
+        ],
+      ),
+    );
+  }
+
+  Widget _auctionCard(List<dynamic> product) {
+    return GestureDetector(
+      onTap: () => context.go('/product/${product[0].toLowerCase().replaceAll(' ', '-')}'),
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppTheme.bgCard,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppTheme.borderColor),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              children: [
+                Container(
+                  height: 160,
+                  decoration: BoxDecoration(
+                    color: AppTheme.bgDark,
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                  ),
+                  child: Center(
+                    child: Text(
+                      product[4],
+                      style: const TextStyle(fontSize: 64),
+                    ),
+                  ),
+                ),
+                // Auction badge
+                Positioned(
+                  top: 8,
+                  left: 8,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: AppTheme.colorRed.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: AppTheme.colorRed.withOpacity(0.3)),
+                    ),
+                    child: const Text('🔨 Auction', style: TextStyle(fontSize: 10, color: AppTheme.colorRed, fontWeight: FontWeight.w600)),
+                  ),
+                ),
+                // Timer
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: AppTheme.colorRed.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Text('⏱ 2h 14m', style: TextStyle(fontSize: 10, color: AppTheme.colorRed)),
+                  ),
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.all(14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    product[0],
+                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.textPrimary),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 8),
+                  Text('23 bids', style: const TextStyle(fontSize: 11, color: AppTheme.textMuted)),
+                  const SizedBox(height: 10),
+                  Text(
+                    '${product[3].toStringAsFixed(0)} AXC',
+                    style: GoogleFonts.orbitron(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: AppTheme.goldPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  ElevatedButton(
+                    onPressed: () => context.go('/product/${product[0].toLowerCase().replaceAll(' ', '-')}'),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      minimumSize: Size.zero,
+                    ),
+                    child: const Text('Bid Now'),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEscrowBanner(double width) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Container(
+        padding: const EdgeInsets.all(28),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              AppTheme.colorPurple.withOpacity(0.08),
+              AppTheme.colorBlue.withOpacity(0.08),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppTheme.colorPurple.withOpacity(0.2)),
+        ),
+        child: Row(
+          children: [
+            const Text('🛡️', style: TextStyle(fontSize: 48)),
+            const SizedBox(width: 20),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'ESCROW PROTECTED TRANSACTIONS',
+                    style: GoogleFonts.orbitron(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: AppTheme.colorPurple,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Payments are securely held in marketplace escrow until vendors successfully deliver the ordered products. Buyers may request refunds if products are not delivered as described.',
+                    style: TextStyle(fontSize: 14, color: AppTheme.textMuted, height: 1.7),
+                  ),
+                ],
+              ),
+            ),
+            if (width > 768)
+              Column(
+                children: [
+                  _escrowStep('1', 'Buyer pays with coins'),
+                  const SizedBox(height: 8),
+                  _escrowStep('2', 'Coins held in escrow'),
+                  const SizedBox(height: 8),
+                  _escrowStep('3', 'Item shipped & received'),
+                  const SizedBox(height: 8),
+                  _escrowStep('4', 'Coins released to vendor'),
+                ],
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _escrowStep(String num, String text) {
+    return Row(
+      children: [
+        Container(
+          width: 20,
+          height: 20,
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(colors: [AppTheme.colorPurple, AppTheme.colorBlue]),
+            shape: BoxShape.circle,
+          ),
+          child: Center(
+            child: Text(
+              num,
+              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: Colors.white),
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(text, style: const TextStyle(fontSize: 12, color: AppTheme.textMuted)),
+      ],
+    );
+  }
+
+  Widget _buildTopVendors(double width) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'TOP VERIFIED VENDORS',
+                style: GoogleFonts.orbitron(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              TextButton(
+                onPressed: () {},
+                child: const Text('All Vendors →'),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 240,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              childAspectRatio: 1.3,
+            ),
+            itemCount: vendors.length,
+            itemBuilder: (ctx, i) {
+              return GestureDetector(
+                onTap: () => context.go('/vendor/${vendors[i][0].toLowerCase().replaceAll(' ', '-')}'),
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: AppTheme.bgCard,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: AppTheme.borderColor),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            width: 48,
+                            height: 48,
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(colors: [AppTheme.goldPrimary, AppTheme.goldDark]),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Center(
+                              child: Text(
+                                vendors[i][1],
+                                style: const TextStyle(fontSize: 20),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  vendors[i][0],
+                                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+                                ),
+                                const SizedBox(height: 2),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: AppTheme.colorGreen.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(color: AppTheme.colorGreen.withOpacity(0.3)),
+                                  ),
+                                  child: const Text('✓ Verified', style: TextStyle(fontSize: 10, color: AppTheme.colorGreen)),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Row(
+                            children: [
+                              const Text('⭐', style: TextStyle(fontSize: 12)),
+                              Text('${vendors[i][2]}', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                            ],
+                          ),
+                          Text('${vendors[i][3]} sales', style: const TextStyle(fontSize: 12, color: AppTheme.textMuted)),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 56),
+        ],
+      ),
+    );
+  }
+
   Widget _buildCoinBanner(double width) {
     return Padding(
       padding: const EdgeInsets.all(24),
@@ -468,89 +982,45 @@ class _HomePageState extends ConsumerState<HomePage> {
       ),
     );
   }
-}
 
-class _EscrowBanner extends StatelessWidget {
-  const _EscrowBanner();
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Container(
-        padding: const EdgeInsets.all(28),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              AppTheme.colorPurple.withOpacity(0.08),
-              AppTheme.colorBlue.withOpacity(0.08),
+  Widget _buildFooter() {
+    return Container(
+      padding: const EdgeInsets.all(32),
+      decoration: BoxDecoration(
+        color: AppTheme.bgCard,
+        border: Border(top: BorderSide(color: AppTheme.goldPrimary.withOpacity(0.3), width: 1)),
+      ),
+      child: Column(
+        children: [
+          // Footer links
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _footerLink('About'),
+              _footerLink('Help'),
+              _footerLink('Terms'),
+              _footerLink('Privacy'),
+              _footerLink('Contact'),
             ],
           ),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppTheme.colorPurple.withOpacity(0.2)),
-        ),
-        child: Row(
-          children: [
-            const Text('🛡️', style: TextStyle(fontSize: 48)),
-            const SizedBox(width: 20),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'ESCROW PROTECTED TRANSACTIONS',
-                    style: GoogleFonts.orbitron(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: AppTheme.colorPurple,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Payments are securely held in marketplace escrow until vendors successfully deliver the ordered products. Buyers may request refunds if products are not delivered as described.',
-                    style: TextStyle(fontSize: 14, color: AppTheme.textMuted, height: 1.7),
-                  ),
-                ],
-              ),
-            ),
-            if (MediaQuery.of(context).size.width > 768)
-              Column(
-                children: [
-                  _escrowStep('1', 'Buyer pays with coins'),
-                  const SizedBox(height: 8),
-                  _escrowStep('2', 'Coins held in escrow'),
-                  const SizedBox(height: 8),
-                  _escrowStep('3', 'Item shipped & received'),
-                  const SizedBox(height: 8),
-                  _escrowStep('4', 'Coins released to vendor'),
-                ],
-              ),
-          ],
-        ),
+          const SizedBox(height: 16),
+          // Copyright
+          Text(
+            '© 2024 AUTOX Marketplace. All rights reserved.',
+            style: const TextStyle(fontSize: 12, color: AppTheme.textDim),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _escrowStep(String num, String text) {
-    return Row(
-      children: [
-        Container(
-          width: 20,
-          height: 20,
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(colors: [AppTheme.colorPurple, AppTheme.colorBlue]),
-            shape: BoxShape.circle,
-          ),
-          child: Center(
-            child: Text(
-              num,
-              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: Colors.white),
-            ),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Text(text, style: const TextStyle(fontSize: 12, color: AppTheme.textMuted)),
-      ],
+  Widget _footerLink(String label) {
+    return GestureDetector(
+      onTap: () {},
+      child: Text(
+        label,
+        style: const TextStyle(fontSize: 13, color: AppTheme.textMuted, fontWeight: FontWeight.w500),
+      ),
     );
   }
 }
