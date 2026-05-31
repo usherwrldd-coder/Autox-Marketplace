@@ -29,8 +29,8 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> with SingleTi
   String  _sortBy  = 'newest';
   final int     _page    = 1;
   late TabController _tabController;
-  double _walletBalance = 2450.0;
-  int _notifications = 3;
+  final double _walletBalance = 2450.0;
+  final int _notifications = 3;
   
   Map<String, dynamic> get _filters => {
     'productType': _selectedType,

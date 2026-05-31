@@ -986,8 +986,8 @@ class _HomePageState extends ConsumerState<HomePage> {
   Widget _buildFooter() {
     return Container(
       padding: const EdgeInsets.fromLTRB(24, 48, 24, 28),
-      decoration: BoxDecoration(
-        color: const Color(0xFF060A12),
+      decoration: const BoxDecoration(
+        color: Color(0xFF060A12),
         border: Border(top: BorderSide(color: AppTheme.borderColor, width: 1)),
       ),
       child: Column(
@@ -1067,7 +1067,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           // Bottom bar
           Container(
             padding: const EdgeInsets.only(top: 20),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               border: Border(top: BorderSide(color: AppTheme.borderColor, width: 1)),
             ),
             child: ConstrainedBox(

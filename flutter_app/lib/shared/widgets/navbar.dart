@@ -254,9 +254,9 @@ class _NavbarState extends State<Navbar> {
         // Action Menu Bar (Horizontal Scrollable)
         Container(
           height: 44,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: AppTheme.bgCard,
-            border: const Border(bottom: BorderSide(color: AppTheme.borderColor)),
+            border: Border(bottom: BorderSide(color: AppTheme.borderColor)),
           ),
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
